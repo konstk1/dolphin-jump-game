@@ -1,0 +1,24 @@
+{
+  "name": "dolphin-jump-game",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.26.0",
+  "description": "Dolphin Jump — a browser-based kids' board game (deep-sea dolphin race).",
+  "scripts": {
+    "dev": "vite",
+    "dev:ipad": "HTTPS=1 vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "preview:ipad": "HTTPS=1 vite preview --host",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vite-plugin-mkcert": "^2.0.0",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.7"
+  }
+}

@@ -1,0 +1,67 @@
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Deep-sea depth gradient: sunlit shallows → deep blue (GAME_DESIGN.md §10). */
+  background: linear-gradient(180deg, #4db6e2 0%, #1e6fa8 38%, #0a2a43 100%);
+  color: #eaf6ff;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none; /* no pull-to-refresh mid-turn */
+}
+
+#app {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.boot {
+  text-align: center;
+  padding: 2rem;
+}
+
+.boot__dolphin {
+  font-size: 4rem;
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+.boot__title {
+  font-size: 2.75rem;
+  margin: 0.25rem 0 0.5rem;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.boot__tag {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.boot__status {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
