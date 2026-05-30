@@ -202,16 +202,79 @@ stuck, no adult needed every turn.
 
 ---
 
-## 10. Look, feel & audio — NOT yet decided (future rounds)
+## 10. Art direction
 
-These branches were intentionally paused and are **open**:
+Overall style: **Deep-Sea Adventure** — an immersive underwater quest. Deep-blue water,
+light rays, rising bubbles, coral & seaweed, glossy dolphins, and a treasure-chest
+finish. Exciting for the 7-year-old, with a hard rule running through every art choice:
+**keep the dolphins and the special spots bright and high-contrast so the 4-year-old can
+always read the board** (deep blue water + a blue dolphin must never blur together).
 
-- **Art direction** — ocean theme, board path style, dolphin character design,
-  special-spot iconography, start & win screens. (Plan: prototype a few distinct
-  visual directions and pick one.)
-- **Audio & "juice"** — sound effects, music, animation feel, celebration polish.
-- **Technical build** — framework/stack, project structure, how the board layout and
-  the ~10–12 special-spot positions/values are defined in code, and deployment.
+### Dolphins (the four tokens & the win-screen heroes)
+- **Cute glossy mascots:** big sparkly eyes, friendly smiles, slightly chibi/rounded
+  bodies, wet glossy shine.
+- Each wears its player color **plus a bright outline/glow rim** so all four — especially
+  blue — pop off the deep-blue water and stay distinct when two share a spot.
+- **Motion:** gentle idle bob; a happy flip when landing on a good spot.
+
+### Board layout
+- **Whole board visible at once**, as a winding **S-path snake** (Chutes & Ladders style):
+  **start at the bottom**, **treasure-chest finish at the top**.
+- Everyone always sees every dolphin and how close the race is — important for the
+  4-year-old's sense of the game.
+- Spots get small at 100-on-screen, so: **numbers stay big**, and **dolphin tokens float
+  slightly above the path** so they never cover the spot number.
+
+### The deep-sea world (scenery)
+- **Depth journey — sunlight → treasure** (selected by recommendation; default):
+  - **Bottom (start):** bright **sunlit shallows** with coral and little fish.
+  - Climbing the board, the water **deepens** through reef, kelp, and a shipwreck…
+  - **Top (finish):** mysterious **deep blue** with a **glowing treasure chest**.
+  - The deepening water doubles as a **progress cue** — the 4-year-old can see she's
+    "going deeper" toward the prize — while every band stays bright enough to read tokens.
+
+### Special-spot icons (must read instantly for a non-reader)
+**Themed ocean icons, color-coded** — each carries its number (e.g. "5") but the picture
+carries the meaning:
+
+| Action | Icon | Color |
+|--------|------|-------|
+| Jump forward | bubble-current / water-jet whooshing ahead | **green** (good) |
+| Jump back | grabby **octopus** (or anchor) pulling back | **red** (setback) |
+| Switch | **whirlpool** / two swirling swap arrows | **blue** |
+| Roll again | sparkly **die** (starfish accent) | **gold** |
+
+Color reinforces good-vs-setback at a glance; the four shapes are deliberately distinct.
+
+### Start screen
+- **Four dolphins bobbing at the sunlit surface** under a big treasure-map **"Dolphin
+  Jump"** title.
+- **Tap a dolphin to join** — it perks up / glows. A friendly age control sits beside each;
+  **leave it blank to sit that dolphin out** (§2).
+- **Age entry uses tap-friendly +/− steppers (no keyboard needed)** so the 4-year-old can
+  set her own age — woven into the surface scene.
+- A big **"Dive in!"** button starts the race.
+
+### Win / celebration screen
+- **Treasure-chest party:** the winning dolphin bursts up and **leaps over an open glowing
+  treasure chest**, **"You Win!"** in big bouncy letters, with **fireworks + stars +
+  bubbles** and a happy cheer.
+- Then a tidy **ribbons panel** fills in **2nd / 3rd / 4th** as each remaining dolphin
+  finishes (per the end-of-game flow, §7), each with a little "You made it!" moment.
+
+### Typography
+- **Title:** chunky, bubbly **rounded display font** — playful, fits the splashy mood.
+- **Board numbers:** clean, **heavy rounded sans**, kept **razor-sharp and high-contrast**
+  even on small tiles over dark water (the 7-year-old reads these to count toward 100).
+
+---
+
+## 11. Still open (future rounds)
+
+- **Audio & "juice"** — sound effects (whoosh forward, bubble-pop back, swap shuffle, die
+  rattle, victory cheer), music, animation feel, celebration polish.
+- **Technical build** — framework/stack, project structure, how the board layout and the
+  ~10–12 special-spot positions/values are defined in code, and deployment.
 
 ---
 
@@ -231,3 +294,11 @@ These branches were intentionally paused and are **open**:
 | 10 | End of game | **Winner party, then everyone finishes** for places |
 | 11 | Fairness | **Pure luck**; age used only for turn order |
 | 12 | Back-past-start | **Prevented by board design** |
+| 13 | Overall art style | **Deep-Sea Adventure** (immersive underwater quest) |
+| 14 | Dolphin design | **Cute glossy mascots** + bright glow rim, idle bob / happy flip |
+| 15 | Board layout | **Whole board visible**, winding S-snake, start bottom → chest top |
+| 16 | Sea world | **Depth journey**: sunlit shallows → deep blue treasure (progress cue) |
+| 17 | Special-spot icons | **Themed ocean icons**, color-coded (green/red/blue/gold) |
+| 18 | Start screen | **Four dolphins at the surface**, tap-to-join, +/− age steppers, "Dive in!" |
+| 19 | Win screen | **Treasure-chest party** + fireworks, then ribbons fill 2nd/3rd/4th |
+| 20 | Typography | **Bouncy rounded title**, crisp heavy-rounded board numbers |
