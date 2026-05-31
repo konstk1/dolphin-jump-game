@@ -11,14 +11,26 @@
 |-----------|--------|-------|
 | M0 — Scaffold & iPad pipeline | ✅ done (👀 iPad-HTTPS check pending user) | builds/tests/serves over HTTP; HTTPS opt-in |
 | M1 — Visual deep-sea art mockup | ✅ done — **Sunny Lagoon** (👀 verified Chromium; iPad check pending) | full 100-spot board renders; kids picked Sunny Lagoon |
-| M2 — Pure rules engine + tests | ⬜ next | independent of M1 |
-| M3 — Playable vertical slice | ⬜ pending | depends on M1 + M2; "is it fun" gate |
+| M2 — Pure rules engine + tests | ✅ done | 37 tests green incl. 200-game property test; strict build clean |
+| M3 — Playable vertical slice | ⬜ next | depends on M1 + M2; "is it fun" gate |
 | M4 — Animation sequencer & juice | ⬜ pending | depends on M3 |
 | M5 — Start-screen polish & persistence | ⬜ pending | independent of M4 |
 | M6 — PWA install, offline, kid-proofing | ⬜ pending | |
 | M7 — Deploy to GitHub Pages | ⬜ pending | |
 
-**Next action:** M2 (pure rules engine + tests) — independent of the art.
+**Next action:** M3 (playable vertical slice) — wire the M2 engine to the M1 art:
+start screen → tap die → snap-move → resolve → win/places. Swap `src/render/board.ts`'s
+SAMPLE layout for real `SPECIAL_SPOTS` data from `src/board.ts`. This is the "is it fun"
+family-playtest gate.
+
+**M2 build notes:** engine is `src/engine/` — `types.ts` (Player/GameState/Die),
+`turnOrder.ts` (`buildPlayers`, youngest→oldest + sit-outs), `game.ts`
+(`createGame`/`takeTurn`, pure: **die is injected**, returns new state + replayable
+`TurnEvent[]` for the M4 sequencer). Board data + invariant validator in `src/board.ts`
+(`SPECIAL_SPOTS`, 12 specials; `validateBoard`). Engine is **board-agnostic** —
+`takeTurn(state, die, board?)` takes an optional `BoardLookup`, defaulting to the shipped
+board. 37 Vitest tests across `test/{board,turnOrder,game,invariants}.test.ts`, incl. a
+200-game randomized property test. `ENGINE_READY` sentinel kept for the M0 smoke test.
 **Pending user checkpoints:** (1) run `pnpm dev:ipad`, trust the mkcert CA, open on the
 iPad mini over HTTPS to confirm the wifi workflow (M0 👀); (2) see the M1 Sunny Lagoon
 mockup on the real iPad — verified clean in Chromium, but device/WebKit unseen (watch:
