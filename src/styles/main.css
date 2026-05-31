@@ -23,8 +23,8 @@ body {
 
 #app {
   min-height: 100%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .boot {

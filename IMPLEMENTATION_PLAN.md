@@ -10,17 +10,29 @@
 | Milestone | Status | Notes |
 |-----------|--------|-------|
 | M0 — Scaffold & iPad pipeline | ✅ done (👀 iPad-HTTPS check pending user) | builds/tests/serves over HTTP; HTTPS opt-in |
-| M1 — Visual deep-sea art mockup | ⬜ next | static, no logic; family reaction gate |
-| M2 — Pure rules engine + tests | ⬜ pending | independent of M1 |
+| M1 — Visual deep-sea art mockup | ✅ done — **Sunny Lagoon** (👀 verified Chromium; iPad check pending) | full 100-spot board renders; kids picked Sunny Lagoon |
+| M2 — Pure rules engine + tests | ⬜ next | independent of M1 |
 | M3 — Playable vertical slice | ⬜ pending | depends on M1 + M2; "is it fun" gate |
 | M4 — Animation sequencer & juice | ⬜ pending | depends on M3 |
 | M5 — Start-screen polish & persistence | ⬜ pending | independent of M4 |
 | M6 — PWA install, offline, kid-proofing | ⬜ pending | |
 | M7 — Deploy to GitHub Pages | ⬜ pending | |
 
-**Next action:** M1 (visual mockup) — does not depend on the pending iPad-HTTPS check.
-**Pending user checkpoint:** run `pnpm dev:ipad`, trust the mkcert CA, open the app on the
-iPad mini over HTTPS to confirm the wifi workflow (M0 👀).
+**Next action:** M2 (pure rules engine + tests) — independent of the art.
+**Pending user checkpoints:** (1) run `pnpm dev:ipad`, trust the mkcert CA, open on the
+iPad mini over HTTPS to confirm the wifi workflow (M0 👀); (2) see the M1 Sunny Lagoon
+mockup on the real iPad — verified clean in Chromium, but device/WebKit unseen (watch:
+`-webkit-text-stroke` title, SVG glow filter, board legibility at true iPad-mini size).
+
+**M1 build notes:** chosen art lives in `src/render/art.ts` (Sunny Lagoon primitives:
+recolorable dolphin symbol, die, 4 special icons, treasure chest, title, win banner),
+`src/render/board.ts` (full 100-spot boustrophedon snake; start bottom-left → chest
+top-left), `src/styles/theme.css`. Dolphin colors injected as **direct hex fills** (not
+SVG `var()`) for WebKit safety. Board uses a square 10×10 CSS grid that fills the portrait
+stage. `src/render/board.ts` currently renders a **SAMPLE** special-spot layout
+(`SAMPLE_SPECIALS`/`SAMPLE_TOKENS`) — M3 swaps this for real engine data from
+`src/board.ts`. Also fixed a pre-existing build break: added `@types/node` +
+`tsconfig` `types: [..., "node"]` for the user's `process.env.HTTPS` in `vite.config.ts`.
 
 ---
 

@@ -1,0 +1,352 @@
+/* Sunny Lagoon theme (M1) — the chosen art direction, as reusable CSS. */
+
+:root {
+  --dj-font: 'Arial Rounded MT Bold', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --dj-purple: #9b5de5;
+  --dj-pink: #ff5db1;
+  --dj-blue: #2d8fff;
+  --dj-green: #2ecc71;
+}
+
+/* ===== Sunny Lagoon water backdrop ===== */
+.dj-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: radial-gradient(
+    140% 90% at 50% -8%,
+    #ffffff 0%,
+    #d8fbff 14%,
+    #9ff0f4 38%,
+    #5fd9e6 62%,
+    #34c2dd 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dj-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  background: conic-gradient(
+    from 200deg at 50% -12%,
+    transparent 0deg,
+    rgba(255, 255, 255, 0) 8deg,
+    rgba(255, 255, 255, 0.55) 12deg,
+    rgba(255, 255, 255, 0) 16deg,
+    transparent 24deg,
+    rgba(255, 255, 255, 0.45) 30deg,
+    rgba(255, 255, 255, 0) 36deg,
+    transparent 50deg,
+    rgba(255, 255, 255, 0.5) 56deg,
+    rgba(255, 255, 255, 0) 62deg,
+    transparent 80deg,
+    rgba(255, 255, 255, 0.42) 86deg,
+    rgba(255, 255, 255, 0) 92deg,
+    transparent 360deg
+  );
+}
+.dj-sandglow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 120%, rgba(255, 236, 160, 0.55) 0%, rgba(255, 236, 160, 0) 70%);
+}
+
+.dj-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 600px;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  padding: 14px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ===== Title ===== */
+.dj-title {
+  text-align: center;
+  line-height: 0.84;
+  transform: rotate(-3deg);
+  flex: 0 0 auto;
+}
+.dj-word {
+  display: block;
+  font-family: var(--dj-font);
+  font-weight: 900;
+  letter-spacing: -1px;
+  -webkit-text-stroke: 6px #ffffff;
+  paint-order: stroke fill;
+}
+.dj-word--dolphin {
+  font-size: 46px;
+  color: #ff9e2c;
+  text-shadow: 0 0 1px #ff9e2c, 0 5px 0 rgba(198, 110, 0, 0.35), 0 8px 11px rgba(0, 40, 90, 0.3);
+}
+.dj-word--jump {
+  font-size: 50px;
+  margin-top: 2px;
+  color: #12a6db;
+  transform: rotate(5deg);
+  text-shadow: 0 0 1px #12a6db, 0 5px 0 rgba(13, 90, 150, 0.4), 0 8px 11px rgba(0, 40, 90, 0.3);
+  animation: dj-title-bob 2.6s ease-in-out infinite;
+}
+@keyframes dj-title-bob {
+  0%, 100% { transform: rotate(5deg) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-4px); }
+}
+
+/* ===== Dolphin lineup (start screen / sample) ===== */
+.dj-lineup {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  flex: 0 0 auto;
+}
+.dj-token {
+  width: 78px;
+  height: 78px;
+  animation: dj-bob 3s ease-in-out infinite;
+}
+.dj-lineup .dj-token:nth-child(2) { animation-delay: 0.4s; }
+.dj-lineup .dj-token:nth-child(3) { animation-delay: 0.8s; }
+.dj-lineup .dj-token:nth-child(4) { animation-delay: 1.2s; }
+@keyframes dj-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+/* ===== The 100-spot board grid ===== */
+.dj-board {
+  position: relative;
+  flex: 0 1 auto;
+  width: 100%;
+  /* Keep the board square so the 10×10 grid cells stay square and big.
+     Height is capped to whatever vertical space the flex column leaves. */
+  aspect-ratio: 1 / 1;
+  max-height: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  min-height: 0;
+}
+
+/* ===== The winding ribbon road (drawn behind the stepping-stone spots) ===== */
+.dj-road {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.dj-road__edge,
+.dj-road__fill,
+.dj-road__dash {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Non-scaling stroke keeps the road a constant visual width regardless of
+     the board's pixel size, so it reads cleanly on any screen. */
+  vector-effect: non-scaling-stroke;
+}
+.dj-road__edge {
+  stroke: #ffe9b0;
+  stroke-width: 58px;
+} /* soft sand shoulder */
+.dj-road__fill {
+  stroke: #ffd277;
+  stroke-width: 46px;
+} /* sandy path */
+.dj-road__dash {
+  stroke: #fff4d6;
+  stroke-width: 4px;
+  stroke-dasharray: 2 22;
+  opacity: 0.85;
+} /* dotted centre line */
+
+.dj-spot {
+  position: relative;
+  z-index: 1;
+  place-self: center;
+  /* Stepping stones: smaller than the cell, so water shows between them and
+     the road winds through. */
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 0 rgba(0, 60, 90, 0.16), 0 3px 5px rgba(0, 40, 80, 0.18);
+  box-sizing: border-box;
+  min-width: 0;
+}
+.dj-spot svg {
+  width: 74%;
+  height: 74%;
+}
+/* Special + finish stones are a touch bigger and rounded-square to stand out */
+.dj-spot--special,
+.dj-spot--finish,
+.dj-spot--start {
+  width: 84%;
+  height: 84%;
+  border-radius: 26%;
+}
+
+.dj-spot__num {
+  position: absolute;
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: clamp(11px, 2.6vw, 16px);
+  color: #1487b0;
+  pointer-events: none;
+}
+.dj-spot--plain {
+  background: linear-gradient(180deg, #ffffff 0%, #d9f6ff 100%);
+  border: 2px solid #ffffff;
+}
+
+.dj-spot--start {
+  background: linear-gradient(180deg, #aef0c2 0%, #2ecc71 100%);
+  border: 2px solid #ffffff;
+  flex-direction: column;
+  gap: 0;
+}
+.dj-start-arrow { width: 38% !important; height: 38% !important; }
+.dj-spot__lbl {
+  font-family: var(--dj-font);
+  font-size: clamp(7px, 1.8vw, 10px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 80, 40, 0.5);
+  letter-spacing: 0.3px;
+}
+
+/* Special spots — number sits in the corner, icon fills the tile */
+.dj-spot--special .dj-spot__num {
+  bottom: 1px;
+  right: 3px;
+  font-size: clamp(10px, 2.4vw, 14px);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+.dj-spot--jumpf {
+  background: linear-gradient(180deg, #b7ffd6 0%, #2ecc71 100%);
+  border: 2px solid #eafff2;
+}
+.dj-spot--jumpf .dj-spot__num { color: #0f7a3b; }
+.dj-spot--jumpb {
+  background: linear-gradient(180deg, #ffc1c1 0%, #ff4d4d 100%);
+  border: 2px solid #ffe6e6;
+}
+.dj-spot--jumpb .dj-spot__num { color: #b81616; right: auto; left: 3px; }
+.dj-spot--switch {
+  background: linear-gradient(180deg, #bfe4ff 0%, #2d8fff 100%);
+  border: 2px solid #e6f3ff;
+}
+.dj-spot--roll {
+  background: linear-gradient(180deg, #fff0a8 0%, #ffc62e 100%);
+  border: 2px solid #fff8dc;
+}
+
+.dj-spot--finish {
+  background: radial-gradient(circle at 50% 30%, #fff7d6 0%, #ffd86b 45%, #f6b22e 100%);
+  border: 2px solid #fffaf0;
+  box-shadow: 0 0 0 3px rgba(255, 214, 90, 0.45), 0 3px 0 rgba(120, 70, 0, 0.25), 0 5px 8px rgba(90, 50, 0, 0.3);
+  animation: dj-chest-glow 2.4s ease-in-out infinite;
+}
+@keyframes dj-chest-glow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(255, 214, 90, 0.45), 0 3px 0 rgba(120, 70, 0, 0.25), 0 5px 8px rgba(90, 50, 0, 0.3); }
+  50% { box-shadow: 0 0 0 5px rgba(255, 224, 120, 0.65), 0 3px 0 rgba(120, 70, 0, 0.25), 0 6px 14px rgba(255, 190, 60, 0.55); }
+}
+
+/* ===== Dolphin tokens sitting ON a spot (float above the number) ===== */
+.dj-spot__tokens {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.dj-spot__token {
+  position: absolute;
+  left: calc(8% + var(--i) * 22%);
+  top: -18%;
+}
+.dj-mini {
+  width: 86%;
+  height: 86%;
+  filter: drop-shadow(0 1px 2px rgba(0, 40, 80, 0.4));
+}
+
+/* ===== Die + win banner ===== */
+.dj-bottomrow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.dj-die {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  animation: dj-die-wobble 3.5s ease-in-out infinite;
+}
+@keyframes dj-die-wobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+.dj-banner {
+  position: relative;
+  flex: 1 1 auto;
+  background: linear-gradient(180deg, #fff6c4 0%, #ffd23f 100%);
+  border: 4px solid #ffffff;
+  border-radius: 22px;
+  padding: 8px 10px 8px 14px;
+  box-shadow: 0 6px 0 rgba(190, 120, 0, 0.25), 0 9px 16px rgba(120, 70, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible;
+}
+.dj-banner__text {
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 26px;
+  line-height: 0.9;
+  color: #ff5db1;
+  -webkit-text-stroke: 4px #ffffff;
+  paint-order: stroke fill;
+  text-shadow: 0 2px 0 rgba(214, 44, 135, 0.4);
+  transform: rotate(-4deg);
+}
+.dj-win-dolphin {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  animation: dj-bob 2s ease-in-out infinite;
+}
+.dj-banner__stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
