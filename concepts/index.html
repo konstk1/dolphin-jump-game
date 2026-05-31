@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dolphin Jump — Art Concepts</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: #1b1f24;
+        color: #eaf6ff;
+      }
+      header {
+        padding: 1rem 1.25rem 0.5rem;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.4rem;
+      }
+      header p {
+        margin: 0;
+        opacity: 0.65;
+        font-size: 0.85rem;
+      }
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        position: sticky;
+        top: 0;
+        background: #1b1f24;
+        z-index: 10;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .tabs button {
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #eaf6ff;
+        background: #2b323b;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        padding: 0.5rem 1.1rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .tabs button:hover {
+        background: #3a434f;
+      }
+      .tabs button.active {
+        background: #2aa7e0;
+        border-color: #2aa7e0;
+        color: #03222f;
+      }
+      .stage {
+        display: flex;
+        justify-content: center;
+        padding: 1.25rem;
+      }
+      .stage iframe {
+        width: 420px;
+        height: 800px;
+        border: 0;
+        border-radius: 14px;
+        background: #333;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      }
+      /* Compare-all grid */
+      .grid {
+        display: none;
+        grid-template-columns: repeat(2, 420px);
+        gap: 1.25rem;
+        justify-content: center;
+        padding: 1.25rem;
+      }
+      .grid.show {
+        display: grid;
+      }
+      .grid figure {
+        margin: 0;
+        text-align: center;
+      }
+      .grid iframe {
+        width: 420px;
+        height: 800px;
+        border: 0;
+        border-radius: 14px;
+        background: #333;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      }
+      .grid figcaption {
+        margin-top: 0.5rem;
+        font-weight: 600;
+        opacity: 0.85;
+      }
+      .single.hide {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 420px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🐬 Dolphin Jump — Art Concepts</h1>
+      <p>Four Deep-Sea Adventure executions. Tap a tab to view one, or "Compare all" to see them side by side.</p>
+    </header>
+
+    <nav class="tabs" id="tabs">
+      <button data-concept="concept-1-sunny-lagoon.html" class="active">Sunny Lagoon</button>
+      <button data-concept="concept-2-moody-abyss.html">Moody Abyss</button>
+      <button data-concept="concept-3-tropical-reef.html">Tropical Reef</button>
+      <button data-concept="concept-4-crystal-current.html">Crystal Current</button>
+      <button data-grid="1">▦ Compare all</button>
+    </nav>
+
+    <section class="stage single" id="single">
+      <iframe id="frame" src="concept-1-sunny-lagoon.html" title="concept"></iframe>
+    </section>
+
+    <section class="grid" id="grid">
+      <figure>
+        <iframe src="concept-1-sunny-lagoon.html" title="Sunny Lagoon"></iframe>
+        <figcaption>1 · Sunny Lagoon</figcaption>
+      </figure>
+      <figure>
+        <iframe src="concept-2-moody-abyss.html" title="Moody Abyss"></iframe>
+        <figcaption>2 · Moody Abyss</figcaption>
+      </figure>
+      <figure>
+        <iframe src="concept-3-tropical-reef.html" title="Tropical Reef"></iframe>
+        <figcaption>3 · Tropical Reef</figcaption>
+      </figure>
+      <figure>
+        <iframe src="concept-4-crystal-current.html" title="Crystal Current"></iframe>
+        <figcaption>4 · Crystal Current</figcaption>
+      </figure>
+    </section>
+
+    <script>
+      const tabs = document.getElementById('tabs')
+      const frame = document.getElementById('frame')
+      const single = document.getElementById('single')
+      const grid = document.getElementById('grid')
+
+      tabs.addEventListener('click', (e) => {
+        const btn = e.target.closest('button')
+        if (!btn) return
+        ;[...tabs.children].forEach((b) => b.classList.remove('active'))
+        btn.classList.add('active')
+        if (btn.dataset.grid) {
+          grid.classList.add('show')
+          single.classList.add('hide')
+        } else {
+          grid.classList.remove('show')
+          single.classList.remove('hide')
+          frame.src = btn.dataset.concept
+        }
+      })
+    </script>
+  </body>
+</html>

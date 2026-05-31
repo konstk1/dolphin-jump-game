@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dolphin Jump — Tropical Reef</title>
+<style>
+  :root {
+    /* dolphin colors */
+    --d-purple: #9b4dff;
+    --d-purple-d: #6b21d8;
+    --d-pink: #ff5fa2;
+    --d-pink-d: #d62f7a;
+    --d-blue: #2f9bff;
+    --d-blue-d: #1659c4;
+    --d-green: #36d97a;
+    --d-green-d: #128f4c;
+
+    /* reef accents */
+    --coral-pink: #ff7eb6;
+    --coral-orange: #ff9a52;
+    --coral-purple: #c06bff;
+    --gold: #ffce3d;
+    --good: #36d97a;
+    --bad: #ff5347;
+    --swirl: #38b6ff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #333;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* ---- The portrait stage ---- */
+  .stage {
+    position: relative;
+    width: 400px;
+    height: 760px;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    /* clear teal/aqua water, brighter near surface (top) deepening down */
+    background:
+      radial-gradient(120% 60% at 50% -8%, #d6fbff 0%, rgba(214,251,255,0) 55%),
+      linear-gradient(180deg, #6fe3e6 0%, #34c2d6 28%, #1fa6cf 58%, #1786bf 82%, #0f6aa8 100%);
+  }
+
+  /* sun rays through the water */
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(105deg, rgba(255,255,255,0.22) 0 6%, transparent 6% 16%),
+      linear-gradient(95deg, rgba(255,255,255,0.16) 0 4%, transparent 4% 22%),
+      linear-gradient(80deg, rgba(255,255,255,0.18) 0 5%, transparent 5% 20%);
+    background-position: 10% 0, 45% 0, 75% 0;
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  /* full-bleed reef background svg */
+  .reef-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px 0;
+  }
+
+  /* ---------- TITLE ---------- */
+  .title-wrap {
+    text-align: center;
+    margin-top: 4px;
+    position: relative;
+  }
+  .title {
+    display: inline-block;
+    font-weight: 900;
+    font-size: 46px;
+    line-height: 0.92;
+    letter-spacing: -1px;
+    color: #fff;
+    text-shadow:
+      0 2px 0 #1f74a6,
+      0 4px 0 #155b86,
+      0 7px 10px rgba(0,0,0,0.35);
+    transform: rotate(-3deg);
+  }
+  .title .row2 {
+    display: block;
+    color: #fff3b0;
+    text-shadow:
+      0 2px 0 #c98a14,
+      0 4px 0 #9c6608,
+      0 7px 10px rgba(0,0,0,0.35);
+    transform: rotate(2deg) translateY(-4px);
+  }
+  .title-sparkle {
+    position: absolute;
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 0 0 8px #fff;
+  }
+
+  /* ---------- DOLPHIN LINEUP ---------- */
+  .lineup {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .token {
+    width: 84px;
+    height: 78px;
+  }
+  .bob { animation: bob 3.4s ease-in-out infinite; }
+  .bob:nth-child(2) { animation-delay: .4s; }
+  .bob:nth-child(3) { animation-delay: .8s; }
+  .bob:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes bob {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    50%     { transform: translateY(-6px) rotate(1deg); }
+  }
+
+  /* ---------- BOARD ---------- */
+  .board-wrap {
+    flex: 1;
+    margin-top: 8px;
+    position: relative;
+  }
+  .board-svg { width: 100%; height: 100%; display: block; }
+
+  /* ---------- BOTTOM ROW: die + win banner ---------- */
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 6px 0 8px;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    z-index: 5;
+  }
+
+  .sway { animation: sway 5s ease-in-out infinite; transform-origin: bottom center; }
+  @keyframes sway {
+    0%,100% { transform: rotate(-2deg); }
+    50%     { transform: rotate(2deg); }
+  }
+  .rise { animation: rise 6s linear infinite; }
+  @keyframes rise {
+    0%   { transform: translateY(8px); opacity: 0; }
+    15%  { opacity: .8; }
+    100% { transform: translateY(-40px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="stage">
+
+    <!-- ============ REEF BACKGROUND ============ -->
+    <svg class="reef-bg" viewBox="0 0 400 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe7a8"/>
+          <stop offset="1" stop-color="#f4c66a"/>
+        </linearGradient>
+        <radialGradient id="anem" cx="0.5" cy="0.4" r="0.7">
+          <stop offset="0" stop-color="#ffd0e6"/>
+          <stop offset="1" stop-color="#ff7eb6"/>
+        </radialGradient>
+        <linearGradient id="weedG" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#1c9c5e"/>
+          <stop offset="1" stop-color="#6ff0a3"/>
+        </linearGradient>
+        <linearGradient id="weedP" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#8a31c9"/>
+          <stop offset="1" stop-color="#d79bff"/>
+        </linearGradient>
+      </defs>
+
+      <!-- distant background fish (small, faded) -->
+      <g fill="#bff2ff" opacity="0.5">
+        <g transform="translate(60,150)">
+          <ellipse cx="0" cy="0" rx="9" ry="5"/>
+          <polygon points="8,0 16,-5 16,5"/>
+        </g>
+        <g transform="translate(330,210)">
+          <ellipse cx="0" cy="0" rx="8" ry="4"/>
+          <polygon points="7,0 14,-4 14,4"/>
+        </g>
+        <g transform="translate(300,120)">
+          <ellipse cx="0" cy="0" rx="6" ry="3.5"/>
+          <polygon points="5,0 11,-3 11,3"/>
+        </g>
+      </g>
+      <g fill="#ffd58a" opacity="0.55">
+        <g transform="translate(120,300)">
+          <ellipse cx="0" cy="0" rx="7" ry="4"/>
+          <polygon points="6,0 13,-4 13,4"/>
+        </g>
+        <g transform="translate(280,360)">
+          <ellipse cx="0" cy="0" rx="7" ry="4"/>
+          <polygon points="6,0 13,-4 13,4"/>
+        </g>
+      </g>
+
+      <!-- rising bubbles -->
+      <g fill="#ffffff" opacity="0.35">
+        <circle class="rise" cx="40" cy="520" r="4"/>
+        <circle class="rise" cx="48" cy="560" r="2.5" style="animation-delay:1.5s"/>
+        <circle class="rise" cx="362" cy="500" r="3.5" style="animation-delay:.7s"/>
+        <circle class="rise" cx="356" cy="540" r="2" style="animation-delay:2.4s"/>
+        <circle class="rise" cx="200" cy="600" r="3" style="animation-delay:3.1s"/>
+      </g>
+
+      <!-- SEA TURTLE accent (upper right, drifting) -->
+      <g transform="translate(316,86) rotate(8)" opacity="0.9">
+        <ellipse cx="0" cy="0" rx="26" ry="20" fill="#2f9e7a"/>
+        <ellipse cx="0" cy="0" rx="26" ry="20" fill="none" stroke="#1c6f54" stroke-width="2"/>
+        <!-- shell plates -->
+        <g stroke="#1c6f54" stroke-width="1.6" fill="#3fb98e">
+          <path d="M0,-12 L9,-5 L6,7 L-6,7 L-9,-5 Z"/>
+        </g>
+        <!-- head -->
+        <circle cx="26" cy="-2" r="7" fill="#3fb98e"/>
+        <circle cx="29" cy="-4" r="1.6" fill="#143b2e"/>
+        <!-- flippers -->
+        <path d="M-16,-14 q-14,-10 -20,-2 q10,4 18,8 Z" fill="#3fb98e"/>
+        <path d="M-16,14 q-14,10 -20,2 q10,-4 18,-8 Z" fill="#3fb98e"/>
+        <path d="M16,-14 q10,-9 17,-4 q-7,5 -13,9 Z" fill="#3fb98e"/>
+      </g>
+
+      <!-- SANDY SEABED -->
+      <path d="M0,690 Q80,660 160,684 T320,680 Q360,672 400,690 L400,760 L0,760 Z" fill="url(#sand)"/>
+      <path d="M0,700 Q80,672 160,694 T320,690 Q360,684 400,700 L400,760 L0,760 Z" fill="#f0b94f" opacity="0.6"/>
+
+      <!-- LEFT coral cluster -->
+      <g class="sway">
+        <path d="M16,700 C2,650 10,610 26,604 C40,612 36,660 30,700 Z" fill="url(#weedG)"/>
+      </g>
+      <g class="sway" style="animation-delay:1.2s">
+        <path d="M40,702 C30,656 38,620 50,616 C62,624 56,668 52,702 Z" fill="url(#weedP)"/>
+      </g>
+      <!-- left brain/lump coral -->
+      <g transform="translate(34,706)">
+        <ellipse cx="0" cy="0" rx="40" ry="26" fill="var(--coral-orange)"/>
+        <ellipse cx="-14" cy="-6" rx="14" ry="11" fill="#ffb877"/>
+        <ellipse cx="12" cy="-2" rx="12" ry="10" fill="#ffb877"/>
+        <ellipse cx="-2" cy="6" rx="10" ry="8" fill="#ff8a3d"/>
+      </g>
+      <!-- left anemone -->
+      <g transform="translate(70,690)">
+        <circle cx="0" cy="6" r="14" fill="url(#anem)"/>
+        <g stroke="#ff9ccb" stroke-width="3.4" stroke-linecap="round">
+          <line x1="0" y1="2" x2="-14" y2="-10"/>
+          <line x1="0" y1="2" x2="-6" y2="-16"/>
+          <line x1="0" y1="2" x2="2" y2="-18"/>
+          <line x1="0" y1="2" x2="10" y2="-14"/>
+          <line x1="0" y1="2" x2="16" y2="-6"/>
+        </g>
+      </g>
+
+      <!-- RIGHT coral cluster -->
+      <g class="sway" style="animation-delay:.6s">
+        <path d="M386,704 C398,656 392,616 378,610 C366,620 372,664 376,704 Z" fill="url(#weedG)"/>
+      </g>
+      <g class="sway" style="animation-delay:1.8s">
+        <path d="M360,706 C372,660 366,624 354,620 C342,630 348,672 352,706 Z" fill="url(#weedP)"/>
+      </g>
+      <!-- branching pink coral right -->
+      <g transform="translate(360,704)" fill="var(--coral-pink)">
+        <path d="M0,0 C-6,-34 -22,-40 -28,-30 C-24,-22 -16,-22 -12,-12 C-22,-18 -34,-12 -34,0 Z"/>
+        <path d="M4,0 C10,-30 26,-36 30,-26 C26,-18 16,-20 12,-10 C22,-16 32,-8 30,2 Z"/>
+        <circle cx="-28" cy="-30" r="5"/>
+        <circle cx="30" cy="-26" r="5"/>
+        <circle cx="-12" cy="-12" r="4"/>
+      </g>
+      <!-- right purple fan coral -->
+      <g transform="translate(330,700)" fill="var(--coral-purple)" opacity="0.92">
+        <path d="M0,0 C-16,-12 -16,-30 0,-38 C16,-30 16,-12 0,0 Z"/>
+        <g stroke="#7e2bbf" stroke-width="1.4">
+          <line x1="0" y1="-2" x2="0" y2="-34"/>
+          <line x1="0" y1="-2" x2="-8" y2="-26"/>
+          <line x1="0" y1="-2" x2="8" y2="-26"/>
+        </g>
+      </g>
+
+      <!-- STARFISH on sand -->
+      <g transform="translate(180,722) rotate(-12)">
+        <path d="M0,-16 L4.7,-4 L17,-4 L7,4 L10,16 L0,9 L-10,16 L-7,4 L-17,-4 L-4.7,-4 Z"
+              fill="var(--coral-orange)" stroke="#e07a2a" stroke-width="1.4"/>
+        <circle cx="0" cy="0" r="2.2" fill="#fff" opacity="0.7"/>
+      </g>
+    </svg>
+
+    <!-- ============ FOREGROUND CONTENT ============ -->
+    <div class="content">
+
+      <!-- TITLE -->
+      <div class="title-wrap">
+        <span class="title-sparkle" style="left:30px;top:-2px">✦</span>
+        <span class="title-sparkle" style="right:36px;top:30px;font-size:14px">✦</span>
+        <div class="title">Dolphin<span class="row2">Jump</span></div>
+      </div>
+
+      <!-- DOLPHIN LINEUP -->
+      <div class="lineup">
+        <!-- purple -->
+        <svg class="token bob" viewBox="0 0 100 94">
+          <use href="#dolphin" fill="var(--d-purple)" stroke="var(--d-purple-d)"/>
+        </svg>
+        <!-- pink -->
+        <svg class="token bob" viewBox="0 0 100 94">
+          <use href="#dolphin" fill="var(--d-pink)" stroke="var(--d-pink-d)"/>
+        </svg>
+        <!-- blue -->
+        <svg class="token bob" viewBox="0 0 100 94">
+          <use href="#dolphin" fill="var(--d-blue)" stroke="var(--d-blue-d)"/>
+        </svg>
+        <!-- green -->
+        <svg class="token bob" viewBox="0 0 100 94">
+          <use href="#dolphin" fill="var(--d-green)" stroke="var(--d-green-d)"/>
+        </svg>
+      </div>
+
+      <!-- BOARD SNIPPET -->
+      <div class="board-wrap">
+        <svg class="board-svg" viewBox="0 0 372 470" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <!-- winding path ribbon -->
+            <linearGradient id="pathG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff7e0"/>
+              <stop offset="1" stop-color="#ffe6a8"/>
+            </linearGradient>
+            <filter id="softsh" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#063a55" flood-opacity="0.35"/>
+            </filter>
+            <!-- tile face gradient (solid so it sits above reef) -->
+            <linearGradient id="tileFace" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#dff4fb"/>
+            </linearGradient>
+            <radialGradient id="goodG" cx="0.5" cy="0.35" r="0.8">
+              <stop offset="0" stop-color="#9bffc6"/>
+              <stop offset="1" stop-color="#1faf5d"/>
+            </radialGradient>
+            <radialGradient id="badG" cx="0.5" cy="0.35" r="0.8">
+              <stop offset="0" stop-color="#ff9a8f"/>
+              <stop offset="1" stop-color="#d62b1f"/>
+            </radialGradient>
+            <radialGradient id="swirlG" cx="0.5" cy="0.35" r="0.8">
+              <stop offset="0" stop-color="#a8e4ff"/>
+              <stop offset="1" stop-color="#1c84d8"/>
+            </radialGradient>
+            <radialGradient id="goldG" cx="0.5" cy="0.3" r="0.85">
+              <stop offset="0" stop-color="#fff3b0"/>
+              <stop offset="1" stop-color="#e9a900"/>
+            </radialGradient>
+            <radialGradient id="chestGlow" cx="0.5" cy="0.5" r="0.6">
+              <stop offset="0" stop-color="#fff6c4" stop-opacity="0.95"/>
+              <stop offset="1" stop-color="#fff6c4" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- WINDING PATH RIBBON (snakes bottom -> top) -->
+          <path d="M44,452
+                   C44,452 320,452 328,452
+                   C356,452 356,360 328,360
+                   C300,360 60,360 44,360
+                   C16,360 16,268 44,268
+                   C72,268 300,268 328,268
+                   C356,268 356,176 328,176
+                   C300,176 60,176 44,176
+                   C16,176 16,86 44,86
+                   C72,86 300,86 314,86"
+                fill="none" stroke="url(#pathG)" stroke-width="40"
+                stroke-linecap="round" stroke-linejoin="round"
+                filter="url(#softsh)" opacity="0.95"/>
+          <path d="M44,452
+                   C44,452 320,452 328,452
+                   C356,452 356,360 328,360
+                   C300,360 60,360 44,360
+                   C16,360 16,268 44,268
+                   C72,268 300,268 328,268
+                   C356,268 356,176 328,176
+                   C300,176 60,176 44,176
+                   C16,176 16,86 44,86
+                   C72,86 300,86 314,86"
+                fill="none" stroke="#ffffff" stroke-width="40"
+                stroke-linecap="round" stroke-linejoin="round"
+                stroke-dasharray="2 22" opacity="0.5"/>
+
+          <!-- ===== ROW 1 (bottom): START, 1, 2, 3 ===== -->
+          <!-- START tile -->
+          <g transform="translate(44,452)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#goodG)" stroke="#0e7a3f" stroke-width="3" filter="url(#softsh)"/>
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
+            <text x="0" y="-4" text-anchor="middle" font-size="13" font-weight="900" fill="#0a5e30" font-family="system-ui">START</text>
+            <!-- little flag -->
+            <g transform="translate(0,10)">
+              <rect x="-1" y="-8" width="2" height="14" fill="#0a5e30"/>
+              <path d="M1,-8 L12,-4 L1,0 Z" fill="#fff"/>
+            </g>
+          </g>
+
+          <!-- plain tile 1 -->
+          <g transform="translate(140,452)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <circle cx="0" cy="0" r="17" fill="#eaf7fc" stroke="#bfe6f2" stroke-width="2"/>
+            <text x="0" y="7" text-anchor="middle" font-size="24" font-weight="900" fill="#11688a" font-family="system-ui">1</text>
+          </g>
+          <!-- plain tile 2 -->
+          <g transform="translate(236,452)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <circle cx="0" cy="0" r="17" fill="#eaf7fc" stroke="#bfe6f2" stroke-width="2"/>
+            <text x="0" y="7" text-anchor="middle" font-size="24" font-weight="900" fill="#11688a" font-family="system-ui">2</text>
+          </g>
+          <!-- plain tile 3 -->
+          <g transform="translate(328,452)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <circle cx="0" cy="0" r="17" fill="#eaf7fc" stroke="#bfe6f2" stroke-width="2"/>
+            <text x="0" y="7" text-anchor="middle" font-size="24" font-weight="900" fill="#11688a" font-family="system-ui">3</text>
+          </g>
+
+          <!-- ===== ROW 2: JUMP FORWARD (green current) ===== -->
+          <g transform="translate(328,360)">
+            <rect x="-27" y="-27" width="54" height="54" rx="15" fill="url(#goodG)" stroke="#0e7a3f" stroke-width="3" filter="url(#softsh)"/>
+            <!-- water-jet / current whoosh arrows -->
+            <g stroke="#063d20" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+              <path d="M-16,-8 L-2,-8 M-7,-13 L-2,-8 L-7,-3"/>
+              <path d="M-16,0 L4,0 M-3,-5 L4,0 L-3,5"/>
+              <path d="M-16,8 L-2,8 M-7,3 L-2,8 L-7,13"/>
+            </g>
+            <!-- bubbles trailing -->
+            <circle cx="9" cy="-7" r="2.6" fill="#eafff2"/>
+            <circle cx="13" cy="2" r="2" fill="#eafff2"/>
+            <text x="0" y="24" text-anchor="middle" font-size="15" font-weight="900" fill="#063d20" font-family="system-ui">+5</text>
+          </g>
+
+          <!-- ===== ROW 2: JUMP BACK (red octopus) ===== -->
+          <g transform="translate(140,360)">
+            <rect x="-27" y="-27" width="54" height="54" rx="15" fill="url(#badG)" stroke="#8f1610" stroke-width="3" filter="url(#softsh)"/>
+            <!-- octopus -->
+            <g transform="translate(0,-4)">
+              <ellipse cx="0" cy="0" rx="11" ry="10" fill="#ff8b66"/>
+              <ellipse cx="0" cy="-2" rx="11" ry="9" fill="#ff6f57"/>
+              <circle cx="-4" cy="-1" r="2.1" fill="#fff"/><circle cx="-3.4" cy="-0.5" r="1.1" fill="#3a0a06"/>
+              <circle cx="4" cy="-1" r="2.1" fill="#fff"/><circle cx="4.6" cy="-0.5" r="1.1" fill="#3a0a06"/>
+              <!-- grabby tentacles -->
+              <g stroke="#e0452f" stroke-width="3" fill="none" stroke-linecap="round">
+                <path d="M-9,7 q-6,5 -3,11"/>
+                <path d="M-3,9 q-2,7 -6,10"/>
+                <path d="M3,9 q2,7 6,10"/>
+                <path d="M9,7 q6,5 3,11"/>
+              </g>
+            </g>
+            <text x="0" y="24" text-anchor="middle" font-size="15" font-weight="900" fill="#fff" font-family="system-ui">3</text>
+          </g>
+
+          <!-- ===== ROW 3: SWITCH (blue whirlpool / swap arrows) ===== -->
+          <g transform="translate(44,268)">
+            <rect x="-27" y="-27" width="54" height="54" rx="15" fill="url(#swirlG)" stroke="#0e4f86" stroke-width="3" filter="url(#softsh)"/>
+            <!-- swirling swap arrows -->
+            <g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M-12,-4 A12 12 0 0 1 11,-6"/>
+              <path d="M11,-6 l-1,-7 M11,-6 l7,-2"/>
+              <path d="M12,6 A12 12 0 0 1 -11,8"/>
+              <path d="M-11,8 l1,7 M-11,8 l-7,2"/>
+            </g>
+          </g>
+
+          <!-- ===== ROW 3: ROLL AGAIN (gold starfish / die) ===== -->
+          <g transform="translate(236,268)">
+            <rect x="-27" y="-27" width="54" height="54" rx="15" fill="url(#goldG)" stroke="#a87600" stroke-width="3" filter="url(#softsh)"/>
+            <!-- gold starfish -->
+            <path d="M0,-18 L5.3,-5 L19,-5 L8,4 L11.5,18 L0,10 L-11.5,18 L-8,4 L-19,-5 L-5.3,-5 Z"
+                  fill="#ffd84d" stroke="#b88400" stroke-width="2"/>
+            <!-- sparkle -->
+            <text x="0" y="6" text-anchor="middle" font-size="18" font-weight="900" fill="#8a5e00" font-family="system-ui">↻</text>
+            <circle cx="13" cy="-13" r="2" fill="#fff"/>
+          </g>
+
+          <!-- ===== ROW 3: TWO DOLPHINS SHARING A SPOT ===== -->
+          <!-- dolphin viewBox is 100x94; centre = (50,47). scale 0.36 -> half-extent ~18x17.
+               translate so the scaled centre lands near the tile centre, with a small
+               front/back offset so the stack reads as two tokens. -->
+          <g transform="translate(328,268)">
+            <rect x="-27" y="-27" width="54" height="54" rx="15" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <!-- back dolphin (green), up and to the right -->
+            <g transform="translate(-12,-26) scale(0.36)">
+              <use href="#dolphin" fill="var(--d-green)" stroke="var(--d-green-d)"/>
+            </g>
+            <!-- front dolphin (pink), down and to the left, overlapping -->
+            <g transform="translate(-22,-14) scale(0.36)">
+              <use href="#dolphin" fill="var(--d-pink)" stroke="var(--d-pink-d)"/>
+            </g>
+          </g>
+
+          <!-- ===== ROW 4: small label hint that path continues ===== -->
+          <g transform="translate(44,176)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <circle cx="0" cy="0" r="17" fill="#eaf7fc" stroke="#bfe6f2" stroke-width="2"/>
+            <text x="0" y="6" text-anchor="middle" font-size="14" font-weight="900" fill="#11688a" font-family="system-ui">…</text>
+          </g>
+          <g transform="translate(236,176)">
+            <rect x="-26" y="-26" width="52" height="52" rx="14" fill="url(#tileFace)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+            <circle cx="0" cy="0" r="17" fill="#eaf7fc" stroke="#bfe6f2" stroke-width="2"/>
+            <text x="0" y="7" text-anchor="middle" font-size="22" font-weight="900" fill="#11688a" font-family="system-ui">99</text>
+          </g>
+
+          <!-- ===== FINISH: glowing treasure chest (top) ===== -->
+          <g transform="translate(314,86)">
+            <circle cx="0" cy="0" r="46" fill="url(#chestGlow)"/>
+            <!-- sparkle rays -->
+            <g stroke="#fff3b0" stroke-width="2.6" stroke-linecap="round" opacity="0.9">
+              <line x1="0" y1="-40" x2="0" y2="-30"/>
+              <line x1="34" y1="-22" x2="27" y2="-17"/>
+              <line x1="-34" y1="-22" x2="-27" y2="-17"/>
+            </g>
+            <!-- chest -->
+            <g transform="translate(0,2)">
+              <!-- lid -->
+              <path d="M-24,-8 Q0,-26 24,-8 L24,-4 L-24,-4 Z" fill="#a8702f" stroke="#6e451a" stroke-width="2.4"/>
+              <path d="M-24,-8 Q0,-26 24,-8" fill="none" stroke="#c98c44" stroke-width="2"/>
+              <!-- box -->
+              <rect x="-24" y="-4" width="48" height="24" rx="3" fill="#8a5a25" stroke="#6e451a" stroke-width="2.4"/>
+              <!-- gold bands -->
+              <rect x="-24" y="-4" width="48" height="5" fill="#ffce3d"/>
+              <rect x="-3" y="-12" width="6" height="32" fill="#ffce3d" stroke="#b88400" stroke-width="1"/>
+              <!-- lock -->
+              <rect x="-5" y="2" width="10" height="9" rx="2" fill="#ffe681" stroke="#b88400" stroke-width="1.4"/>
+              <circle cx="0" cy="6" r="1.6" fill="#8a5e00"/>
+              <!-- spilling treasure -->
+              <circle cx="-14" cy="18" r="3" fill="#ffd84d" stroke="#b88400" stroke-width="0.8"/>
+              <circle cx="-7" cy="20" r="2.5" fill="#ffe681"/>
+              <circle cx="12" cy="19" r="3" fill="#ffd84d" stroke="#b88400" stroke-width="0.8"/>
+            </g>
+            <text x="0" y="40" text-anchor="middle" font-size="13" font-weight="900" fill="#a87600" font-family="system-ui" stroke="#fff" stroke-width="3" paint-order="stroke">FINISH</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- BOTTOM: DIE + WIN BANNER -->
+      <div class="bottom">
+        <!-- DIE -->
+        <svg width="76" height="76" viewBox="0 0 76 76" aria-label="die showing five">
+          <defs>
+            <linearGradient id="dieG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#e3f2f8"/>
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="64" height="64" rx="16" fill="url(#dieG)" stroke="#1f9bc2" stroke-width="3" filter="url(#softsh)"/>
+          <rect x="10" y="10" width="40" height="14" rx="7" fill="#fff" opacity="0.7"/>
+          <g fill="#11688a">
+            <circle cx="24" cy="24" r="5.5"/>
+            <circle cx="52" cy="24" r="5.5"/>
+            <circle cx="38" cy="38" r="5.5"/>
+            <circle cx="24" cy="52" r="5.5"/>
+            <circle cx="52" cy="52" r="5.5"/>
+          </g>
+        </svg>
+
+        <!-- WIN BANNER -->
+        <svg width="200" height="84" viewBox="0 0 200 84" aria-label="You win banner">
+          <defs>
+            <linearGradient id="banG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe27a"/>
+              <stop offset="1" stop-color="#ffb938"/>
+            </linearGradient>
+          </defs>
+          <!-- fireworks / stars -->
+          <g fill="#fff">
+            <path d="M18,12 l2,5 l5,2 l-5,2 l-2,5 l-2,-5 l-5,-2 l5,-2 Z"/>
+            <path d="M182,16 l1.6,4 l4,1.6 l-4,1.6 l-1.6,4 l-1.6,-4 l-4,-1.6 l4,-1.6 Z"/>
+          </g>
+          <g stroke="#ffd84d" stroke-width="2" stroke-linecap="round" opacity="0.9">
+            <line x1="100" y1="4" x2="100" y2="12"/>
+            <line x1="78" y1="10" x2="83" y2="16"/>
+            <line x1="122" y1="10" x2="117" y2="16"/>
+          </g>
+
+          <!-- banner ribbon -->
+          <path d="M28,30 L172,30 Q182,30 182,42 L182,58 Q182,70 172,70 L28,70 Q18,70 18,58 L18,42 Q18,30 28,30 Z"
+                fill="url(#banG)" stroke="#d98e16" stroke-width="3" filter="url(#softsh)"/>
+          <text x="100" y="56" text-anchor="middle" font-size="22" font-weight="900"
+                fill="#fff" stroke="#d98e16" stroke-width="3.2" paint-order="stroke"
+                font-family="system-ui" letter-spacing="0.5">YOU WIN!</text>
+
+          <!-- happy dolphin peeking -->
+          <g transform="translate(160,58) scale(0.42) rotate(-8)">
+            <use href="#dolphin" fill="var(--d-blue)" stroke="var(--d-blue-d)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="caption">Tropical Reef</div>
+
+    <!-- ============ SHARED DOLPHIN DEFINITION ============ -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <!-- medium-style mascot dolphin, ~viewBox 100x94, leaping pose.
+             fill = body color, stroke = darker rim. Bright glow added via filter. -->
+        <filter id="glowRim" x="-40%" y="-40%" width="180%" height="180%">
+          <feMorphology operator="dilate" radius="2.4" in="SourceAlpha" result="thick"/>
+          <feFlood flood-color="#ffffff" flood-opacity="0.95"/>
+          <feComposite in2="thick" operator="in" result="ring"/>
+          <feGaussianBlur in="ring" stdDeviation="2.2" result="softring"/>
+          <feMerge>
+            <feMergeNode in="softring"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <g id="dolphin" filter="url(#glowRim)" stroke-width="3" stroke-linejoin="round">
+          <!-- tail fluke -->
+          <path d="M18,80
+                   C10,86 4,84 2,78
+                   C8,78 12,74 16,70
+                   C12,80 22,82 26,74
+                   C24,80 22,82 22,84
+                   C20,84 19,82 18,80 Z"/>
+          <!-- body: leaping arc, head up-right -->
+          <path d="M22,76
+                   C14,58 18,34 40,20
+                   C58,8 80,8 92,14
+                   C84,18 78,24 74,30
+                   C84,30 90,34 94,40
+                   C86,40 78,42 72,46
+                   C66,58 52,70 38,74
+                   C33,76 27,77 22,76 Z"/>
+          <!-- dorsal fin -->
+          <path d="M50,20 C50,8 58,4 64,4 C60,12 60,18 58,24 C55,22 52,21 50,20 Z"/>
+          <!-- pectoral flipper -->
+          <path d="M52,52 C46,62 40,66 34,66 C40,58 44,52 50,48 C51,49 52,50 52,52 Z"/>
+          <!-- lighter belly -->
+          <path d="M30,68 C24,56 26,40 40,28 C50,21 62,18 72,18
+                   C66,24 62,32 60,40 C56,52 46,62 36,66
+                   C34,67 32,68 30,68 Z"
+                fill="#ffffff" fill-opacity="0.32" stroke="none"/>
+          <!-- glossy highlight streak -->
+          <path d="M44,26 C56,16 72,16 82,18 C74,20 64,24 56,30 C52,28 48,27 44,26 Z"
+                fill="#ffffff" fill-opacity="0.55" stroke="none"/>
+          <!-- eye -->
+          <circle cx="78" cy="26" r="5" fill="#ffffff" stroke="none"/>
+          <circle cx="79" cy="27" r="2.8" fill="#1a2230" stroke="none"/>
+          <circle cx="80.4" cy="25.6" r="1" fill="#ffffff" stroke="none"/>
+          <!-- smile -->
+          <path d="M84,32 C90,33 94,37 95,41" fill="none" stroke="#1a2230" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+      </defs>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

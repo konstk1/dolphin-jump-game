@@ -44,6 +44,24 @@ pnpm preview          # preview the production build (HTTP)
 **HTTPS is opt-in:** plain `pnpm dev`/`preview` use HTTP (no sudo). `dev:ipad`/`preview:ipad`
 enable mkcert local TLS; the first HTTPS run needs a one-time `sudo` to trust the CA.
 
+## Verify before handoff (don't ship "should work")
+When asked to implement a feature or fix a bug, **self-verify it actually works before
+handing it back.** "Done" means verified, not just written.
+- **Bugs:** reproduce the broken behavior *first*, then prove it's gone after the fix.
+- **Gates:** `pnpm build` (strict TS) clean; `pnpm test` green for anything touching
+  logic (`engine/`, `board.ts`, `persistence.ts`).
+- **Actually run it** with the Claude Preview MCP: drive the real interaction
+  (`preview_click`/`preview_fill` — tap the die, enter ages, trigger the spot in
+  question), `preview_screenshot` the result, and check `preview_console_logs` for
+  errors/warnings. Use `preview_inspect` for exact CSS (contrast/size/layout) and
+  `preview_resize` to iPad-mini portrait.
+- **Hand off with evidence:** state what you verified and how (screenshot/log), not just
+  "done."
+- **Honest limit:** the Preview loop is headless **Chromium**; the device truth is **iPad
+  WebKit**. Self-verify everything possible in Chromium, then call out explicitly any
+  residual that needs the real iPad (known WebKit risks: `var()` in SVG attrs,
+  `-webkit-text-stroke`, animation timing) and tell the user exactly what to tap.
+
 ## Working agreements
 - **Commits: only when the user explicitly asks.** Otherwise leave the tree clean and
   report what changed. Each milestone should end runnable + reviewable.

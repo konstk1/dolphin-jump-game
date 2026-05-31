@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dolphin Jump — Sunny Lagoon</title>
+<style>
+  :root {
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    /* Dolphin colors */
+    --purple: #9b5de5;
+    --purple-dk: #6f33c2;
+    --pink: #ff5db1;
+    --pink-dk: #d62c87;
+    --blue: #2d8fff;
+    --blue-dk: #155fc4;
+    --green: #2ecc71;
+    --green-dk: #1f9d52;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #333;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+    font-family: var(--font);
+  }
+
+  /* ===== Portrait stage ===== */
+  .stage {
+    position: relative;
+    width: 400px;
+    height: 760px;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    /* Bright tropical shallows: sunlit aqua water */
+    background:
+      radial-gradient(140% 90% at 50% -8%, #ffffff 0%, #d8fbff 14%, #9ff0f4 38%, #5fd9e6 62%, #34c2dd 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Sunlit god-rays from the top */
+  .rays {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    background:
+      conic-gradient(from 200deg at 50% -12%,
+        transparent 0deg,
+        rgba(255,255,255,0.0) 8deg,
+        rgba(255,255,255,0.55) 12deg,
+        rgba(255,255,255,0.0) 16deg,
+        transparent 24deg,
+        rgba(255,255,255,0.45) 30deg,
+        rgba(255,255,255,0.0) 36deg,
+        transparent 50deg,
+        rgba(255,255,255,0.50) 56deg,
+        rgba(255,255,255,0.0) 62deg,
+        transparent 80deg,
+        rgba(255,255,255,0.42) 86deg,
+        rgba(255,255,255,0.0) 92deg,
+        transparent 360deg);
+    mix-blend-mode: screen;
+  }
+
+  /* faint sandy glow at the bottom (shallow lagoon floor light) */
+  .sandglow {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 180px;
+    pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 120%, rgba(255,236,160,0.55) 0%, rgba(255,236,160,0.0) 70%);
+  }
+
+  /* gentle drifting bubbles */
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.15) 60%, rgba(255,255,255,0) 70%);
+    box-shadow: inset 0 0 4px rgba(255,255,255,0.6);
+    animation: rise linear infinite;
+    pointer-events: none;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    12%  { opacity: 0.9; }
+    100% { transform: translateY(-120px) translateX(8px); opacity: 0; }
+  }
+
+  .content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ===== Title ===== */
+  .title {
+    margin-top: 4px;
+    text-align: center;
+    line-height: 0.84;
+    transform: rotate(-3deg);
+  }
+  .title .word {
+    display: block;
+    font-weight: 900;
+    letter-spacing: -1px;
+    font-family: "Arial Rounded MT Bold", var(--font);
+    /* solid colored fill with a chunky white outline drawn UNDER the fill */
+    -webkit-text-stroke: 6px #ffffff;
+    paint-order: stroke fill;
+  }
+  .title .dolphin {
+    font-size: 54px;
+    color: #ff9e2c;
+    text-shadow:
+      0 0 1px #ff9e2c,
+      0 5px 0 rgba(198,110,0,0.35),
+      0 8px 11px rgba(0,40,90,0.30);
+  }
+  .title .jump {
+    font-size: 58px;
+    margin-top: 2px;
+    color: #12a6db;
+    transform: rotate(5deg);
+    animation: titleBob 2.6s ease-in-out infinite;
+    text-shadow:
+      0 0 1px #12a6db,
+      0 5px 0 rgba(13,90,150,0.4),
+      0 8px 11px rgba(0,40,90,0.30);
+  }
+  @keyframes titleBob {
+    0%,100% { transform: rotate(5deg) translateY(0); }
+    50%     { transform: rotate(5deg) translateY(-4px); }
+  }
+
+  /* ===== Panels ===== */
+  .panel-label {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #0b5b78;
+    background: rgba(255,255,255,0.7);
+    padding: 2px 9px;
+    border-radius: 999px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    margin: 2px 0 -2px;
+  }
+
+  /* ===== Dolphin lineup ===== */
+  .lineup {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+  }
+  .token {
+    width: 86px;
+    height: 86px;
+    animation: bob 3s ease-in-out infinite;
+  }
+  .token:nth-child(2) { animation-delay: .4s; }
+  .token:nth-child(3) { animation-delay: .8s; }
+  .token:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes bob {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50%     { transform: translateY(-6px) rotate(2deg); }
+  }
+
+  /* ===== Board ===== */
+  .board {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .board-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .board-row.r2 { justify-content: flex-end; }
+
+  .tile {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 0 rgba(0,60,90,0.18), 0 8px 12px rgba(0,40,80,0.22);
+    box-sizing: border-box;
+  }
+  .tile .num {
+    position: absolute;
+    font-weight: 900;
+    font-family: "Arial Rounded MT Bold", var(--font);
+    -webkit-text-stroke: 3px #ffffff;
+    paint-order: stroke fill;
+  }
+  /* plain numbered tile */
+  .tile.plain {
+    background: linear-gradient(180deg, #ffffff 0%, #d9f6ff 100%);
+    border: 3px solid #ffffff;
+  }
+  .tile.plain .num {
+    font-size: 26px;
+    color: #1487b0;
+    -webkit-text-stroke: 0;
+  }
+
+  /* start tile */
+  .tile.start {
+    background: linear-gradient(180deg, #aef0c2 0%, #2ecc71 100%);
+    border: 3px solid #ffffff;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .tile.start .lbl {
+    font-size: 12px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,80,40,0.5);
+    letter-spacing: 0.5px;
+  }
+
+  /* special tiles */
+  .tile.special .num {
+    bottom: 2px;
+    right: 6px;
+    font-size: 19px;
+  }
+  .tile.jumpf {
+    background: linear-gradient(180deg, #b7ffd6 0%, #2ecc71 100%);
+    border: 3px solid #eafff2;
+  }
+  .tile.jumpf .num { color: #0f7a3b; }
+  .tile.jumpb {
+    background: linear-gradient(180deg, #ffc1c1 0%, #ff4d4d 100%);
+    border: 3px solid #ffe6e6;
+  }
+  .tile.jumpb .num { color: #b81616; right: auto; left: 6px; }
+  .tile.switch {
+    background: linear-gradient(180deg, #bfe4ff 0%, #2d8fff 100%);
+    border: 3px solid #e6f3ff;
+  }
+  .tile.roll {
+    background: linear-gradient(180deg, #fff0a8 0%, #ffc62e 100%);
+    border: 3px solid #fff8dc;
+  }
+
+  /* finish treasure tile */
+  .tile.finish {
+    width: 76px;
+    height: 76px;
+    border-radius: 22px;
+    background: radial-gradient(circle at 50% 30%, #fff7d6 0%, #ffd86b 45%, #f6b22e 100%);
+    border: 3px solid #fffaf0;
+    box-shadow: 0 0 0 4px rgba(255,214,90,0.45), 0 6px 0 rgba(120,70,0,0.25), 0 10px 16px rgba(90,50,0,0.3);
+    animation: chestGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes chestGlow {
+    0%,100% { box-shadow: 0 0 0 4px rgba(255,214,90,0.45), 0 6px 0 rgba(120,70,0,0.25), 0 10px 16px rgba(90,50,0,0.3); }
+    50%     { box-shadow: 0 0 0 7px rgba(255,224,120,0.65), 0 6px 0 rgba(120,70,0,0.25), 0 10px 22px rgba(255,190,60,0.55); }
+  }
+
+  /* stacked dolphins tile */
+  .tile.stack {
+    background: linear-gradient(180deg, #ffffff 0%, #d4f3ff 100%);
+    border: 3px solid #ffffff;
+    overflow: visible;
+  }
+  .tile.stack .mini {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    filter: drop-shadow(0 2px 3px rgba(0,40,80,0.35));
+  }
+  .tile.stack .mini.back  { left: 0;  top: -4px; transform: rotate(-8deg); }
+  .tile.stack .mini.front { right: -2px; top: 12px; transform: rotate(8deg); }
+
+  .arrow {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0,60,100,0.4);
+    flex: 0 0 auto;
+  }
+
+  /* ===== Bottom row: die + win banner ===== */
+  .bottomrow {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2px;
+  }
+
+  .die {
+    width: 78px;
+    height: 78px;
+    flex: 0 0 auto;
+    animation: dieWobble 3.5s ease-in-out infinite;
+  }
+  @keyframes dieWobble {
+    0%,100% { transform: rotate(-4deg); }
+    50%     { transform: rotate(4deg); }
+  }
+
+  .banner {
+    position: relative;
+    flex: 1 1 auto;
+    background: linear-gradient(180deg, #fff6c4 0%, #ffd23f 100%);
+    border: 4px solid #ffffff;
+    border-radius: 22px;
+    padding: 8px 10px 8px 14px;
+    box-shadow: 0 6px 0 rgba(190,120,0,0.25), 0 9px 16px rgba(120,70,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: visible;
+  }
+  .banner .wintext {
+    font-family: "Arial Rounded MT Bold", var(--font);
+    font-weight: 900;
+    font-size: 26px;
+    line-height: 0.9;
+    color: #ff5db1;
+    -webkit-text-stroke: 4px #ffffff;
+    paint-order: stroke fill;
+    text-shadow: 0 2px 0 rgba(214,44,135,0.4);
+    transform: rotate(-4deg);
+  }
+  .banner .winDolph {
+    width: 56px;
+    height: 56px;
+    flex: 0 0 auto;
+    animation: bob 2s ease-in-out infinite;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 10px;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 4;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 1px 4px rgba(0,70,110,0.6);
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="rays"></div>
+    <div class="sandglow"></div>
+
+    <!-- drifting bubbles -->
+    <div class="bubble" style="left:30px;  bottom:120px; width:10px; height:10px; animation-duration:7s;"></div>
+    <div class="bubble" style="left:90px;  bottom:60px;  width:6px;  height:6px;  animation-duration:9s; animation-delay:1.5s;"></div>
+    <div class="bubble" style="left:330px; bottom:200px; width:12px; height:12px; animation-duration:8s; animation-delay:.8s;"></div>
+    <div class="bubble" style="left:360px; bottom:90px;  width:7px;  height:7px;  animation-duration:6.5s; animation-delay:2.2s;"></div>
+    <div class="bubble" style="left:200px; bottom:40px;  width:9px;  height:9px;  animation-duration:10s; animation-delay:.4s;"></div>
+
+    <!-- ===== Reusable dolphin shape (SVG symbol) ===== -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="dolphin" viewBox="0 0 120 120">
+          <!-- chunky chibi dolphin facing right; uses currentColor families via fill refs -->
+          <!-- tail -->
+          <path class="d-body" d="M14 60
+            C 6 46, 4 36, 12 32
+            C 18 40, 22 48, 26 54
+            C 22 58, 18 60, 14 60 Z" />
+          <path class="d-body" d="M14 62
+            C 6 76, 4 86, 12 90
+            C 18 82, 22 74, 26 68
+            C 22 64, 18 62, 14 62 Z" />
+          <!-- dorsal fin -->
+          <path class="d-body" d="M58 26
+            C 60 12, 70 8, 78 12
+            C 74 22, 70 30, 64 38 Z" />
+          <!-- main body: round chibi belly with a beaky snout -->
+          <path class="d-body" d="M24 60
+            C 24 40, 42 28, 66 30
+            C 86 31, 102 40, 110 54
+            C 112 58, 112 62, 110 66
+            C 100 76, 96 78, 90 80
+            C 78 90, 58 94, 42 88
+            C 28 83, 24 74, 24 60 Z" />
+          <!-- snout tip -->
+          <path class="d-body" d="M104 54
+            C 114 52, 119 54, 118 58
+            C 117 62, 112 64, 104 64
+            C 102 60, 102 57, 104 54 Z" />
+          <!-- side pectoral fin (darker) -->
+          <path class="d-fin" d="M52 78
+            C 50 92, 56 100, 66 100
+            C 66 92, 64 84, 60 78 Z" />
+          <!-- light belly patch -->
+          <path d="M40 78
+            C 52 90, 74 92, 90 82
+            C 80 88, 60 90, 48 82
+            C 44 80, 42 79, 40 78 Z"
+            fill="#ffffff" opacity="0.55" />
+          <!-- glossy highlight on back -->
+          <path d="M40 42
+            C 56 34, 78 35, 94 44
+            C 80 39, 58 39, 44 47
+            C 42 45, 41 43, 40 42 Z"
+            fill="#ffffff" opacity="0.7" />
+          <!-- smile -->
+          <path d="M96 66 C 104 72, 112 71, 116 67"
+            fill="none" stroke="#1a3a4f" stroke-width="3" stroke-linecap="round" opacity="0.55" />
+          <!-- eye -->
+          <circle cx="92" cy="54" r="9" fill="#fff" />
+          <circle cx="93" cy="55" r="6" fill="#16384a" />
+          <circle cx="95.5" cy="52.5" r="2.4" fill="#fff" />
+          <circle cx="90" cy="57" r="1.3" fill="#fff" opacity="0.85" />
+          <!-- cheek blush -->
+          <circle cx="80" cy="64" r="5" fill="#ff8fb0" opacity="0.5" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="content">
+
+      <!-- TITLE -->
+      <div class="title">
+        <span class="word dolphin">Dolphin</span>
+        <span class="word jump">Jump</span>
+      </div>
+
+      <!-- DOLPHIN LINEUP -->
+      <div class="lineup">
+        <svg class="token" viewBox="0 0 120 120" aria-label="purple dolphin">
+          <g filter="url(#glow)"><use href="#dolphin" fill="var(--purple)" /></g>
+        </svg>
+        <svg class="token" viewBox="0 0 120 120" aria-label="pink dolphin">
+          <g filter="url(#glow)"><use href="#dolphin" fill="var(--pink)" /></g>
+        </svg>
+        <svg class="token" viewBox="0 0 120 120" aria-label="blue dolphin">
+          <g filter="url(#glow)"><use href="#dolphin" fill="var(--blue)" /></g>
+        </svg>
+        <svg class="token" viewBox="0 0 120 120" aria-label="green dolphin">
+          <g filter="url(#glow)"><use href="#dolphin" fill="var(--green)" /></g>
+        </svg>
+      </div>
+
+      <!-- shared filter/defs for glow + fin tint -->
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+          <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feMorphology in="SourceAlpha" operator="dilate" radius="2.4" result="rim"/>
+            <feFlood flood-color="#ffffff" flood-opacity="1"/>
+            <feComposite in2="rim" operator="in" result="rimcol"/>
+            <feGaussianBlur in="rimcol" stdDeviation="1.6" result="rimblur"/>
+            <feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#0a3a5c" flood-opacity="0.35"/>
+            <feMerge>
+              <feMergeNode in="rimblur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+      <!-- BOARD SNIPPET -->
+      <div class="panel-label">The Race Board</div>
+      <div class="board">
+        <!-- Row 1: start -> 1 -> 2 -> 3 -> jump forward -->
+        <div class="board-row r1">
+          <div class="tile start">
+            <svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 4 L20 12 L5 20 Z" fill="#fff"/></svg>
+            <span class="lbl">START</span>
+          </div>
+          <span class="arrow">›</span>
+          <div class="tile plain"><span class="num">1</span></div>
+          <div class="tile plain"><span class="num">2</span></div>
+          <div class="tile plain"><span class="num">3</span></div>
+        </div>
+
+        <!-- Row 2 (snake back, right-aligned): jump fwd, jump back, switch, roll again -->
+        <div class="board-row r2">
+          <!-- JUMP FORWARD: green water-jet whoosh -->
+          <div class="tile special jumpf">
+            <svg width="44" height="44" viewBox="0 0 48 48" aria-label="jump forward">
+              <path d="M6 30 C 14 22, 26 22, 34 28" fill="none" stroke="#0f7a3b" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+              <path d="M6 36 C 16 30, 28 30, 38 34" fill="none" stroke="#0f7a3b" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+              <path d="M24 14 L40 26 L24 38 L24 30 L12 30 L12 22 L24 22 Z" fill="#ffffff" stroke="#0f7a3b" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="9" cy="20" r="3" fill="#eafff2"/>
+              <circle cx="14" cy="14" r="2" fill="#eafff2"/>
+            </svg>
+            <span class="num">+5</span>
+          </div>
+          <!-- JUMP BACK: red grabby octopus -->
+          <div class="tile special jumpb">
+            <svg width="46" height="46" viewBox="0 0 48 48" aria-label="jump back">
+              <!-- head -->
+              <path d="M16 10 C 26 8, 34 14, 34 22 C 34 28, 30 32, 25 33 L 23 33 C 18 32, 14 28, 14 22 C 14 16, 12 12, 16 10 Z" fill="#fff" stroke="#b81616" stroke-width="2"/>
+              <!-- tentacles -->
+              <g fill="#fff" stroke="#b81616" stroke-width="2" stroke-linecap="round">
+                <path d="M16 30 C 12 38, 8 40, 6 44" fill="none"/>
+                <path d="M21 33 C 20 40, 18 43, 16 46" fill="none"/>
+                <path d="M27 33 C 28 40, 30 43, 32 46" fill="none"/>
+                <path d="M32 30 C 36 38, 40 40, 42 44" fill="none"/>
+                <path d="M24 34 C 24 41, 24 44, 24 47" fill="none"/>
+              </g>
+              <!-- eyes -->
+              <circle cx="21" cy="21" r="2.4" fill="#b81616"/>
+              <circle cx="28" cy="21" r="2.4" fill="#b81616"/>
+            </svg>
+            <span class="num">3</span>
+          </div>
+          <!-- SWITCH: blue whirlpool + swap arrows -->
+          <div class="tile special switch">
+            <svg width="44" height="44" viewBox="0 0 48 48" aria-label="switch places">
+              <!-- whirlpool -->
+              <path d="M24 8 C 36 8, 42 16, 40 26 C 38 34, 30 38, 23 36 C 17 35, 14 30, 16 25 C 18 21, 23 20, 26 23 C 28 25, 27 28, 25 28"
+                    fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+              <!-- two swap arrows -->
+              <g stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 18 L16 12 L16 16" />
+                <path d="M38 30 L32 36 L32 32" />
+              </g>
+            </svg>
+          </div>
+          <!-- ROLL AGAIN: gold sparkly die/star -->
+          <div class="tile special roll">
+            <svg width="44" height="44" viewBox="0 0 48 48" aria-label="roll again">
+              <g transform="rotate(-12 24 24)">
+                <rect x="13" y="13" width="22" height="22" rx="6" fill="#fff" stroke="#c9870a" stroke-width="2"/>
+                <circle cx="19" cy="19" r="2.4" fill="#c9870a"/>
+                <circle cx="29" cy="19" r="2.4" fill="#c9870a"/>
+                <circle cx="24" cy="24" r="2.4" fill="#c9870a"/>
+                <circle cx="19" cy="29" r="2.4" fill="#c9870a"/>
+                <circle cx="29" cy="29" r="2.4" fill="#c9870a"/>
+              </g>
+              <!-- sparkle -->
+              <path d="M38 8 l1.6 4.2 4.4 1.6 -4.4 1.6 -1.6 4.2 -1.6 -4.2 -4.4 -1.6 4.4 -1.6 Z" fill="#fff8dc"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Row 3: stacked dolphins -> finish treasure -->
+        <div class="board-row r3">
+          <div class="tile stack" aria-label="two dolphins sharing a spot">
+            <svg class="mini back" viewBox="0 0 120 120"><g filter="url(#glow)"><use href="#dolphin" fill="var(--pink)" /></g></svg>
+            <svg class="mini front" viewBox="0 0 120 120"><g filter="url(#glow)"><use href="#dolphin" fill="var(--green)" /></g></svg>
+          </div>
+          <span class="arrow">›</span>
+          <!-- FINISH: glowing treasure chest -->
+          <div class="tile finish" aria-label="finish treasure chest">
+            <svg width="56" height="56" viewBox="0 0 64 64">
+              <!-- chest base -->
+              <rect x="10" y="30" width="44" height="24" rx="5" fill="#8a5a22" stroke="#5e3a12" stroke-width="2"/>
+              <!-- gold coins spilling -->
+              <circle cx="20" cy="32" r="5" fill="#ffd23f" stroke="#c9870a" stroke-width="1.5"/>
+              <circle cx="32" cy="30" r="6" fill="#ffe066" stroke="#c9870a" stroke-width="1.5"/>
+              <circle cx="44" cy="32" r="5" fill="#ffd23f" stroke="#c9870a" stroke-width="1.5"/>
+              <!-- lid -->
+              <path d="M8 30 C 8 18, 16 12, 32 12 C 48 12, 56 18, 56 30 Z" fill="#a86a28" stroke="#5e3a12" stroke-width="2"/>
+              <rect x="8" y="28" width="48" height="6" rx="2" fill="#c9870a" stroke="#5e3a12" stroke-width="1.5"/>
+              <!-- lock -->
+              <rect x="28" y="30" width="8" height="9" rx="2" fill="#ffe066" stroke="#5e3a12" stroke-width="1.5"/>
+              <!-- shine -->
+              <path d="M16 18 C 24 15, 40 15, 48 18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM: die + win banner -->
+      <div class="bottomrow">
+        <!-- DIE showing 5 pips -->
+        <svg class="die" viewBox="0 0 80 80" aria-label="die showing five">
+          <rect x="6" y="6" width="68" height="68" rx="18" fill="#ffffff" stroke="#cfeefa" stroke-width="3"/>
+          <rect x="6" y="6" width="68" height="68" rx="18" fill="url(#dieShine)"/>
+          <g fill="#1487b0">
+            <circle cx="24" cy="24" r="6"/>
+            <circle cx="56" cy="24" r="6"/>
+            <circle cx="40" cy="40" r="6"/>
+            <circle cx="24" cy="56" r="6"/>
+            <circle cx="56" cy="56" r="6"/>
+          </g>
+          <defs>
+            <linearGradient id="dieShine" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+              <stop offset="0.4" stop-color="#ffffff" stop-opacity="0"/>
+              <stop offset="1" stop-color="#bfe9f7" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- WIN BANNER -->
+        <div class="banner">
+          <!-- fireworks/stars -->
+          <svg width="0" height="0"></svg>
+          <span class="wintext">YOU<br>WIN!</span>
+          <svg class="winDolph" viewBox="0 0 120 120"><g filter="url(#glow)"><use href="#dolphin" fill="var(--blue)" /></g></svg>
+          <!-- celebratory stars -->
+          <svg width="100%" height="100%" viewBox="0 0 160 64" style="position:absolute;inset:0;pointer-events:none;">
+            <g fill="#fff">
+              <path d="M14 10 l1.4 3.6 3.8 1.4 -3.8 1.4 -1.4 3.6 -1.4 -3.6 -3.8 -1.4 3.8 -1.4 Z"/>
+              <path d="M150 14 l1.2 3 3.2 1.2 -3.2 1.2 -1.2 3 -1.2 -3 -3.2 -1.2 3.2 -1.2 Z"/>
+              <path d="M138 50 l1 2.6 2.8 1 -2.8 1 -1 2.6 -1 -2.6 -2.8 -1 2.8 -1 Z"/>
+            </g>
+            <g fill="#ff5db1">
+              <circle cx="6" cy="40" r="2.5"/>
+              <circle cx="156" cy="46" r="2.5"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">Sunny Lagoon</div>
+  </div>
+</body>
+</html>
