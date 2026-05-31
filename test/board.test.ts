@@ -14,9 +14,14 @@ describe('board layout & invariants', () => {
     expect(validateBoard()).toEqual([])
   })
 
-  it('has a balanced, light count of specials (~10–12)', () => {
+  it('has a balanced, light count of specials (~12–14)', () => {
     expect(SPECIAL_SPOTS.length).toBeGreaterThanOrEqual(10)
-    expect(SPECIAL_SPOTS.length).toBeLessThanOrEqual(12)
+    expect(SPECIAL_SPOTS.length).toBeLessThanOrEqual(14)
+  })
+
+  it('includes the late-game fall-back spots', () => {
+    expect(specialAt(91)).toMatchObject({ kind: 'back', value: 5 })
+    expect(specialAt(96)).toMatchObject({ kind: 'back', value: 10 })
   })
 
   it('specialAt finds and misses correctly', () => {
@@ -45,8 +50,8 @@ describe('board layout & invariants', () => {
     expect(validateBoard(bad).some((e) => /underflow/.test(e))).toBe(true)
   })
 
-  it('flags specials in the protected start/finish zones', () => {
+  it('flags specials in the protected start zone / final approach', () => {
     expect(validateBoard([{ index: 5, kind: 'rollAgain' }]).some((e) => /start zone/.test(e))).toBe(true)
-    expect(validateBoard([{ index: 95, kind: 'rollAgain' }]).some((e) => /finish stretch/.test(e))).toBe(true)
+    expect(validateBoard([{ index: 98, kind: 'rollAgain' }]).some((e) => /finish stretch/.test(e))).toBe(true)
   })
 })

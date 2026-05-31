@@ -59,8 +59,9 @@ feeling like a "real board game" the 7-year-old takes seriously.**
 - **Two or more dolphins may occupy the same spot** at the same time.
 
 ### Special-spot count (density)
-- **Light: ~10–12 special spots** out of 100. Mostly plain board with occasional
-  surprises — keeps a long game readable and calm for the 4-year-old.
+- **Light: ~12–14 special spots** out of 100. Mostly plain board with occasional
+  surprises — keeps a long game readable and calm for the 4-year-old. *(Playtest update:
+  nudged up from ~10–12 after adding the late-game fall-back spots below.)*
 
 ### Mix / balance
 - **Balanced** — roughly as many helpful spots as setbacks. A representative,
@@ -83,9 +84,12 @@ has to handle them:
 2. **No backward underflow.** **Jump-back spots are placed far enough from the start
    that the largest back-jump can never go before spot 1.** A dolphin can never be
    pushed off the start of the board.
-3. **Protected start & finish.** No special spots in roughly the **first ~10–15 spots**
-   or the **final stretch**, so games begin gently and the finish-line moment is never
-   ruined by a last-second setback.
+3. **Protected start & immediate finish.** No special spots in roughly the **first
+   ~10–15 spots** or the **very final approach (97–100)**, so games begin gently and the
+   last couple of steps to the chest are clean. *(Playtest update: the original rule
+   protected the whole final stretch; the family added two late "fall-back" setback spots
+   — back-5 at 91, back-10 at 96 — for end-game drama, so only the immediate finish is now
+   protected.)* The very last steps onto the chest still can't be reversed.
 
 ---
 

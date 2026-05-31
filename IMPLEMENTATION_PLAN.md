@@ -12,16 +12,30 @@
 | M0 — Scaffold & iPad pipeline | ✅ done (👀 iPad-HTTPS check pending user) | builds/tests/serves over HTTP; HTTPS opt-in |
 | M1 — Visual deep-sea art mockup | ✅ done — **Sunny Lagoon** (👀 verified Chromium; iPad check pending) | full 100-spot board renders; kids picked Sunny Lagoon |
 | M2 — Pure rules engine + tests | ✅ done | 37 tests green incl. 200-game property test; strict build clean |
-| M3 — Playable vertical slice | ⬜ next | depends on M1 + M2; "is it fun" gate |
-| M4 — Animation sequencer & juice | ⬜ pending | depends on M3 |
+| M3 — Playable vertical slice | ✅ done (👀 family "is it fun" playtest pending) | full game playable start→win; verified in Chromium. **+playtest tweaks:** spacebar rolls; dolphins glide along the path; die tumbles through faces; late-game fall-back spots (back-10 @91, back-5 @95) |
+| M4 — Animation sequencer & juice | ⬜ next | depends on M3 |
 | M5 — Start-screen polish & persistence | ⬜ pending | independent of M4 |
 | M6 — PWA install, offline, kid-proofing | ⬜ pending | |
 | M7 — Deploy to GitHub Pages | ⬜ pending | |
 
-**Next action:** M3 (playable vertical slice) — wire the M2 engine to the M1 art:
-start screen → tap die → snap-move → resolve → win/places. Swap `src/render/board.ts`'s
-SAMPLE layout for real `SPECIAL_SPOTS` data from `src/board.ts`. This is the "is it fun"
-family-playtest gate.
+**Next action:** finish M4 (animation sequencer & juice). **Already started** (M3 tweak):
+`src/sequencer.ts` exists and `animateTurn(board, events, opts)` glides dolphin pawns
+spot-by-spot along the path (consuming the engine's `TurnEvent[]`); spacebar also rolls.
+**Remaining for M4:** die spin, special-spot effects (bubble whoosh / octopus grab /
+whirlpool swap / sparkle die), idle bob + happy flip, roll-again chain pacing polish, and
+the treasure-chest win party with ribbons filling in.
+**Pending family checkpoint:** play M3 with the kids on the iPad ("is it fun?" gate) — it's
+playable now; tune board balance (`SPECIAL_SPOTS`) based on their reaction before/with M4.
+
+**M3 build notes:** app controller is `src/main.ts` (screen state machine: start → game →
+win; full re-render per turn — fine at snap speed). Screens in `src/render/screens.ts`
+(pure HTML builders + `tokensByPosition`/`describeTurn`/`lastRollValue`). `src/render/
+board.ts` now data-driven — renders real `SPECIAL_BY_INDEX` + live token positions (SAMPLE
+constants removed). Die roll uses `Math.random` injected into `takeTurn`. Verified a full
+81-turn 3-player game in Chromium (Pink🥇 Blue🥈 Purple🥉), console clean. **Bug caught +
+fixed:** `theme.css` was only imported via `render/index.ts` (which `main.ts` didn't
+import) → unstyled screens; now imported in `main.ts`. "Play again" pre-fills last ages
+(in-session; real localStorage persistence is M5).
 
 **M2 build notes:** engine is `src/engine/` — `types.ts` (Player/GameState/Die),
 `turnOrder.ts` (`buildPlayers`, youngest→oldest + sit-outs), `game.ts`

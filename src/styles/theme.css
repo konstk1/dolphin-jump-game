@@ -350,3 +350,245 @@
   height: 100%;
   pointer-events: none;
 }
+
+/* ===== M3 screens: start / game HUD / controls / win ===== */
+
+.dj-subtitle {
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  color: #0b5b78;
+  max-width: 28ch;
+}
+.dj-hint {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0b5b78;
+  opacity: 0.8;
+}
+.dj-hint--error {
+  color: #d6342c;
+  opacity: 1;
+}
+
+.dj-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+.dj-setup-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 3px solid #ffffff;
+  border-radius: 18px;
+  padding: 6px 12px 6px 6px;
+  box-shadow: 0 4px 0 rgba(0, 60, 90, 0.14);
+}
+.dj-setup-row .dj-token {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+}
+.dj-setup-name {
+  flex: 1 1 auto;
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #0b5b78;
+}
+.dj-age {
+  width: 76px;
+  height: 48px;
+  border: 3px solid #2d8fff;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: #1487b0;
+}
+.dj-age::placeholder {
+  color: #9fcbe0;
+  font-size: 0.95rem;
+}
+
+.dj-btn {
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #fff;
+  border: 4px solid #fff;
+  border-radius: 999px;
+  padding: 14px 32px;
+  cursor: pointer;
+  -webkit-text-stroke: 0;
+}
+.dj-btn--go {
+  background: linear-gradient(180deg, #ffd23f 0%, #ff9e2c 100%);
+  color: #7a3d00;
+  box-shadow: 0 6px 0 rgba(190, 120, 0, 0.35), 0 9px 16px rgba(120, 70, 0, 0.3);
+}
+.dj-btn--go:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 rgba(190, 120, 0, 0.35);
+}
+
+/* Game HUD */
+.dj-hud {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 0 0 auto;
+}
+.dj-hud__dolphin {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+}
+.dj-hud__dolphin .dj-token {
+  animation: none; /* steady in the HUD so it never bobs into the text */
+}
+.dj-hud__turn {
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #0b5b78;
+  -webkit-text-stroke: 4px #fff;
+  paint-order: stroke fill;
+}
+
+/* Game controls (die + log) */
+.dj-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.dj-die-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 92px;
+  height: 92px;
+}
+.dj-die-btn:active {
+  transform: scale(0.92) rotate(-6deg);
+}
+.dj-die-btn .dj-die {
+  width: 100%;
+  height: 100%;
+}
+.dj-log {
+  margin: 0;
+  min-height: 1.4em;
+  font-weight: 800;
+  color: #0b5b78;
+  text-align: center;
+}
+
+/* Win screen */
+.dj-win {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.dj-win__stars {
+  font-size: 1.6rem;
+  letter-spacing: 0.4em;
+}
+.dj-win__hero .dj-win-dolphin {
+  width: 140px;
+  height: 140px;
+  animation: dj-bob 1.8s ease-in-out infinite;
+}
+.dj-win__title {
+  margin: 0;
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 2.4rem;
+  color: #ff5db1;
+  -webkit-text-stroke: 5px #fff;
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 rgba(214, 44, 135, 0.4);
+}
+.dj-places {
+  list-style: none;
+  margin: 8px 0 4px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 300px;
+}
+.dj-place {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 3px solid #fff;
+  border-radius: 16px;
+  padding: 4px 14px;
+}
+.dj-place__medal {
+  font-size: 1.5rem;
+  width: 1.6em;
+}
+.dj-place__dolphin .dj-token {
+  width: 46px;
+  height: 46px;
+}
+.dj-place__name {
+  font-family: var(--dj-font);
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #0b5b78;
+}
+
+/* ===== Movable dolphin pawn layer (animated by the sequencer) ===== */
+.dj-tokens {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.dj-pawn {
+  position: absolute;
+  width: 9%;
+  height: 9%;
+  /* Centered on the spot, lifted so it floats above the number; --spread keeps
+     dolphins sharing a spot from fully overlapping. left/top transition = swim. */
+  transform: translate(-50%, -62%) translateX(var(--spread, 0));
+  transition: left 0.2s linear, top 0.2s linear;
+  will-change: left, top;
+}
+.dj-pawn .dj-mini {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 2px rgba(0, 40, 80, 0.4));
+}
+
+.dj-die-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* Die-roll tumble — runs while the sequencer is flashing faces (see sequencer.ts) */
+@keyframes dj-die-roll {
+  0% { transform: rotate(0deg) scale(1); }
+  45% { transform: rotate(160deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.dj-die-btn.dj-die--rolling {
+  animation: dj-die-roll 0.42s ease-in-out infinite;
+}
