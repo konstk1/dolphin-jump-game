@@ -104,8 +104,12 @@ function renderSpot(index: number): string {
       special.value !== undefined
         ? `<span class="dj-spot__num">${special.kind === 'forward' ? '+' : ''}${special.value}</span>`
         : ''
+    // On the snake board, even rows (from the bottom) run left→right and odd rows
+    // run right→left, so the forward arrow must flip to face the way of travel.
+    const travelsRight = Math.floor((index - 1) / COLS) % 2 === 0
+    const flipX = special.kind === 'forward' && !travelsRight
     return `<div class="dj-spot dj-spot--special dj-spot--${KIND_CLASS[special.kind]}" ${style} aria-label="${special.kind} spot">
-      ${specialIconSVG(special.kind)}${num}
+      ${specialIconSVG(special.kind, flipX)}${num}
     </div>`
   }
 
@@ -116,7 +120,6 @@ function renderSpot(index: number): string {
 function roadHTML(): string {
   const d = roadPathD()
   return `<svg class="dj-road" viewBox="0 0 ${VB} ${VB}" preserveAspectRatio="none" aria-hidden="true">
-    <path class="dj-road__edge" d="${d}" />
     <path class="dj-road__fill" d="${d}" />
     <path class="dj-road__dash" d="${d}" />
   </svg>`

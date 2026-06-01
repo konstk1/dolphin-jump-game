@@ -96,16 +96,26 @@ export function dieSVG(face = 5, className = 'dj-die'): string {
   </svg>`
 }
 
-/** The four special-spot icons (themed + color-coded). */
-export function specialIconSVG(kind: 'forward' | 'back' | 'switch' | 'rollAgain'): string {
+/**
+ * The four special-spot icons (themed + color-coded). `flipX` mirrors the icon
+ * horizontally — used so the forward arrow points along the row's direction of
+ * travel on the serpentine board (right-to-left rows get a flipped arrow).
+ */
+export function specialIconSVG(
+  kind: 'forward' | 'back' | 'switch' | 'rollAgain',
+  flipX = false,
+): string {
   switch (kind) {
-    case 'forward':
-      return /* html */ `<svg viewBox="0 0 48 48" aria-label="jump forward">
+    case 'forward': {
+      // Mirror about the 48-unit viewBox so the arrow faces the travel direction.
+      const t = flipX ? ` transform="translate(48 0) scale(-1 1)"` : ''
+      return /* html */ `<svg viewBox="0 0 48 48" aria-label="jump forward"><g${t}>
         <path d="M6 30 C 14 22, 26 22, 34 28" fill="none" stroke="#0f7a3b" stroke-width="3.5" stroke-linecap="round" opacity="0.55" />
         <path d="M6 36 C 16 30, 28 30, 38 34" fill="none" stroke="#0f7a3b" stroke-width="3.5" stroke-linecap="round" opacity="0.55" />
         <path d="M24 14 L40 26 L24 38 L24 30 L12 30 L12 22 L24 22 Z" fill="#ffffff" stroke="#0f7a3b" stroke-width="2" stroke-linejoin="round" />
         <circle cx="9" cy="20" r="3" fill="#eafff2" /><circle cx="14" cy="14" r="2" fill="#eafff2" />
-      </svg>`
+      </g></svg>`
+    }
     case 'back':
       return /* html */ `<svg viewBox="0 0 48 48" aria-label="jump back">
         <path d="M16 10 C 26 8, 34 14, 34 22 C 34 28, 30 32, 25 33 L 23 33 C 18 32, 14 28, 14 22 C 14 16, 12 12, 16 10 Z" fill="#fff" stroke="#b81616" stroke-width="2" />

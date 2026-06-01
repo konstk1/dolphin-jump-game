@@ -156,7 +156,6 @@
   pointer-events: none;
   overflow: visible;
 }
-.dj-road__edge,
 .dj-road__fill,
 .dj-road__dash {
   fill: none;
@@ -166,10 +165,6 @@
      the board's pixel size, so it reads cleanly on any screen. */
   vector-effect: non-scaling-stroke;
 }
-.dj-road__edge {
-  stroke: #ffe9b0;
-  stroke-width: 58px;
-} /* soft sand shoulder */
 .dj-road__fill {
   stroke: #ffd277;
   stroke-width: 46px;
@@ -470,6 +465,27 @@
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
+}
+/* Turn indicator + die, side by side. Align the indicator to the die itself
+   (the top of the die column), so the hint sitting under the die doesn't drag
+   the indicator down with it. */
+.dj-turn-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+}
+/* Die + its "tap to roll" hint, stacked so the hint centers under the die. */
+.dj-die-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+/* The indicator's dolphin (52px) is shorter than the die (92px); nudge the
+   indicator down so it reads centered against the die, not the die's top. */
+.dj-hud {
+  margin-top: 20px;
 }
 .dj-die-btn {
   background: none;

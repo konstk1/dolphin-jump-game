@@ -86,14 +86,18 @@ export function startScreenHTML(prefill: Partial<Record<DolphinColor, number>> =
 export function gameScreenHTML(game: GameState, dieFace: number, message: string): string {
   const current = game.players[game.current]!
   return stageShell(`
-    <div class="dj-hud">
-      <span class="dj-hud__dolphin">${dolphinSVG(current.color, 'dj-token')}</span>
-      <span class="dj-hud__turn">${cap(current.color)}'s turn</span>
-    </div>
     ${boardHTML(pawnsHTML(game))}
     <div class="dj-controls">
-      <button class="dj-die-btn" id="dj-roll" type="button" aria-label="Roll the die">${dieSVG(dieFace, 'dj-die')}</button>
-      <p class="dj-log" id="dj-log">${message || 'Tap the die to roll!'}</p>
+      <div class="dj-turn-row">
+        <div class="dj-hud">
+          <span class="dj-hud__dolphin">${dolphinSVG(current.color, 'dj-token')}</span>
+          <span class="dj-hud__turn">${cap(current.color)}'s turn</span>
+        </div>
+        <div class="dj-die-col">
+          <button class="dj-die-btn" id="dj-roll" type="button" aria-label="Roll the die">${dieSVG(dieFace, 'dj-die')}</button>
+          <p class="dj-log" id="dj-log">${message || 'Tap the die to roll!'}</p>
+        </div>
+      </div>
     </div>
   `)
 }
