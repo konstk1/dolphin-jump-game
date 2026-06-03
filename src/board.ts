@@ -25,6 +25,7 @@ export const SPECIAL_SPOTS: SpecialSpot[] = [
   { index: 39, kind: 'switch' },
   { index: 48, kind: 'back', value: 4 },
   { index: 56, kind: 'forward', value: 4 },
+  { index: 62, kind: 'rollAgain' },
   { index: 63, kind: 'back', value: 8 }, // the dramatic mid-board slide
   { index: 71, kind: 'rollAgain' },
   { index: 76, kind: 'switch' },
